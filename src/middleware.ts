@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server"
 import { withAuth } from "next-auth/middleware"
 
-export const runtime = "edge"
+export const runtime = "experimental-edge"
 
 export default withAuth(
-  async function middleware(req) {
+  function middleware(req) {
     return NextResponse.next()
   },
   {
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
     pages: {
       signIn: "/login",
     },

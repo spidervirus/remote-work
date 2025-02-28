@@ -8,26 +8,30 @@ import {
   CreditCard,
   File,
   FileText,
+  Folder,
   Github,
   HelpCircle,
   Image,
   Laptop,
   Loader2,
+  LogOut,
   LucideProps,
+  MessageSquare,
   Moon,
   MoreVertical,
   Pizza,
   Plus,
   Settings,
   SunMedium,
+  ListTodo,
   Trash,
   Twitter,
   User,
+  Users,
   X,
-  type Icon as LucideIcon,
 } from "lucide-react"
 
-export type Icon = LucideIcon
+export type Icon = React.ElementType
 
 export const Icons = {
   logo: Command,
@@ -48,6 +52,11 @@ export const Icons = {
   twitter: Twitter,
   check: Check,
   warning: AlertTriangle,
+  folder: Folder,
+  task: ListTodo,
+  message: MessageSquare,
+  users: Users,
+  logout: LogOut,
   google: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

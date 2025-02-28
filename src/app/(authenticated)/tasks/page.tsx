@@ -1,20 +1,11 @@
 import { Metadata } from "next"
-import { getServerSession } from "next-auth"
-import { redirect } from "next/navigation"
-import { authOptions } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Tasks",
   description: "Manage your tasks and assignments",
 }
 
-export default async function TasksPage() {
-  const session = await getServerSession(authOptions)
-  
-  if (!session?.user) {
-    redirect("/login")
-  }
-
+export default function TasksPage() {
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
