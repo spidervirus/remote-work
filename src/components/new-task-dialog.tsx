@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -32,17 +34,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-type FormData = {
-  title: string
-  description: string
-  dueDate: string
-  priority: "low" | "medium" | "high"
-  project: string
+const taskSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  dueDate: z.string().min(1, "Due date is required"),
+  priority: z.enum(["low", "medium", "high"]),
+  project: z.string().min(1, "Project is required"),
+})
+
+type TaskFormData = z.infer<typeof taskSchema>
+
+type NewTaskDialogProps = {
+  onAddTask: (task: {
+    id: string
+    title: string
+    description: string
+    dueDate: string
+    priority: "low" | "medium" | "high"
+    project: string
+    completed: boolean
+  }) => void
 }
 
-export function NewTaskDialog() {
+export function NewTaskDialog({ onAddTask }: NewTaskDialogProps) {
   const [open, setOpen] = useState(false)
-  const form = useForm<FormData>({
+  const form = useForm<TaskFormData>({
+    resolver: zodResolver(taskSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -52,10 +69,13 @@ export function NewTaskDialog() {
     },
   })
 
-  const onSubmit = (data: FormData) => {
-    // TODO: Implement task creation logic
-    console.log(data)
-    toast.success("Task created successfully")
+  const onSubmit = (data: TaskFormData) => {
+    const newTask = {
+      id: crypto.randomUUID(),
+      ...data,
+      completed: false,
+    }
+    onAddTask(newTask)
     setOpen(false)
     form.reset()
   }
