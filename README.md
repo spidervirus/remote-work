@@ -1,24 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Remote Work Platform
+
+A modern web application built with Next.js for managing remote work, including projects, tasks, and team communication.
+
+## Features
+
+- 🔐 **Secure Authentication**
+  - Email/Password authentication
+  - Protected routes
+  - Session management
+
+- 📊 **Dashboard**
+  - Overview of active projects
+  - Task statistics
+  - Recent activity
+  - Quick actions
+
+- 📂 **Project Management**
+  - Create and manage projects
+  - Project status tracking
+  - Start and end date management
+  - Project descriptions
+  - Modern card-based interface
+
+- ✅ **Task Management**
+  - Create and assign tasks
+  - Task priorities
+  - Due dates
+  - Status tracking
+  - Project association
+  - Filterable task list
+
+- 💬 **Team Communication**
+  - Message center
+  - Real-time updates
+  - Team collaboration
+
+## Tech Stack
+
+- **Framework**: Next.js 14 with App Router
+- **Authentication**: NextAuth.js
+- **Database**: Prisma with PostgreSQL
+- **Styling**: Tailwind CSS
+- **UI Components**: 
+  - Radix UI
+  - Shadcn UI
+  - Lucide Icons
+- **Form Management**:
+  - React Hook Form
+  - Zod validation
+- **State Management**: React Hooks
+- **Notifications**: Sonner
+- **Date Formatting**: Intl API
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+- PostgreSQL database
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/remote-work.git
+cd remote-work
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Fill in your environment variables:
+```env
+DATABASE_URL="postgresql://..."
+NEXTAUTH_SECRET="your-secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+4. Set up the database:
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+5. Run the development server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:3000`
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/
+│   │   └── register/
+│   ├── (authenticated)/
+│   │   ├── dashboard/
+│   │   ├── projects/
+│   │   ├── tasks/
+│   │   ├── messages/
+│   │   └── layout.tsx
+│   └── layout.tsx
+├── components/
+│   ├── ui/
+│   │   ├── button.tsx
+│   │   ├── dialog.tsx
+│   │   ├── form.tsx
+│   │   └── ...
+│   ├── new-project-dialog.tsx
+│   ├── new-task-dialog.tsx
+│   └── ...
+├── lib/
+│   └── utils.ts
+└── types/
+    └── index.ts
+```
+
+## Features in Detail
+
+### Authentication
+- Secure login and registration
+- Protected routes using Next.js middleware
+- Session-based authentication with NextAuth.js
+
+### Project Management
+- Create new projects with title, description, and dates
+- Track project status (Active, Completed, On Hold)
+- View projects in a modern card layout
+- Project details with progress tracking
+
+### Task Management
+- Create tasks with title, description, and due date
+- Assign priority levels
+- Link tasks to projects
+- Filter tasks by status
+- Mark tasks as complete
+
+### Team Communication
+- Message center for team updates
+- Real-time notifications
+- Team member collaboration
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [Radix UI](https://www.radix-ui.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Shadcn UI](https://ui.shadcn.com/)
 
 ## Learn More
 

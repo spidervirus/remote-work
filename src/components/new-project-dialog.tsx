@@ -1,16 +1,13 @@
 "use client"
 
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import { toast } from "sonner"
+import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Icons } from "@/components/icons"
 import {
   Dialog,
   DialogContent,
@@ -20,19 +17,34 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 const projectSchema = z.object({
   name: z.string().min(1, "Project name is required"),
-  description: z.string().optional(),
-  dueDate: z.string().optional(),
+  description: z.string().min(1, "Project description is required"),
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().min(1, "End date is required"),
 })
 
 type ProjectFormData = z.infer<typeof projectSchema>
 
-export function NewProjectDialog() {
-  const [isLoading, setIsLoading] = React.useState(false)
-  const [open, setOpen] = React.useState(false)
+type Project = {
+  id: string
+  name: string
+  description: string
+  startDate: string
+  endDate: string
+  status: "active" | "completed" | "on-hold"
+}
 
+type NewProjectDialogProps = {
+  onAddProject: (project: Project) => void
+}
+
+export function NewProjectDialog({ onAddProject }: NewProjectDialogProps) {
+  const [open, setOpen] = useState(false)
   const {
     register,
     handleSubmit,
@@ -42,80 +54,88 @@ export function NewProjectDialog() {
     resolver: zodResolver(projectSchema),
   })
 
-  async function onSubmit(data: ProjectFormData) {
-    setIsLoading(true)
-    try {
-      // Here you would typically make an API call to create the project
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate API call
-      toast.success("Project created successfully")
-      setOpen(false)
-      reset()
-    } catch (error) {
-      toast.error("Failed to create project")
-    } finally {
-      setIsLoading(false)
+  const onSubmit = (data: ProjectFormData) => {
+    const newProject: Project = {
+      id: crypto.randomUUID(),
+      ...data,
+      status: "active",
     }
+    onAddProject(newProject)
+    setOpen(false)
+    reset()
+    toast.success("Project created successfully")
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Icons.plus className="mr-2 h-4 w-4" />
+          <Plus className="mr-2 h-4 w-4" />
           New Project
         </Button>
       </DialogTrigger>
-      <DialogContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Create New Project</DialogTitle>
-            <DialogDescription>
-              Add a new project to your workspace.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Create New Project</DialogTitle>
+          <DialogDescription>
+            Add a new project to your workspace. Fill out the details below.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Project Name</Label>
+            <Input
+              id="name"
+              placeholder="Enter project name"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              placeholder="Enter project description"
+              {...register("description")}
+            />
+            {errors.description && (
+              <p className="text-sm text-destructive">
+                {errors.description.message}
+              </p>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Project Name</Label>
+              <Label htmlFor="startDate">Start Date</Label>
               <Input
-                id="name"
-                placeholder="Enter project name"
-                {...register("name")}
+                id="startDate"
+                type="date"
+                {...register("startDate")}
               />
-              {errors?.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
+              {errors.startDate && (
+                <p className="text-sm text-destructive">
+                  {errors.startDate.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Enter project description"
-                {...register("description")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="dueDate">Due Date</Label>
+              <Label htmlFor="endDate">End Date</Label>
               <Input
-                id="dueDate"
+                id="endDate"
                 type="date"
-                {...register("dueDate")}
+                {...register("endDate")}
               />
+              {errors.endDate && (
+                <p className="text-sm text-destructive">
+                  {errors.endDate.message}
+                </p>
+              )}
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && (
-                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create Project
-            </Button>
+            <Button type="submit">Create Project</Button>
           </DialogFooter>
         </form>
       </DialogContent>
